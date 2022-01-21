@@ -31,7 +31,9 @@ class MarvelService {
         if (char.description.length === 0){
             char.description = 'Описание персонажа отсутствует'
         }
+    
         return {
+            id: char.id,
             name: char.name,
             description: char.description,
             thumbnail: char.thumbnail.path + "." + char.thumbnail.extension,
