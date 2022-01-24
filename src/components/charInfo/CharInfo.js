@@ -5,6 +5,7 @@ import Skeleton from '../skeleton/Skeleton';
 import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
+
 class CharInfo extends Component {
     state = {
         char: null,
@@ -41,6 +42,8 @@ class CharInfo extends Component {
         }
         this.onCharLoading();
         this.marvelService.getCharacter(charId).then(this.onCharLoaded).catch(this.onError);
+
+        this.foo.bar = 0;
     }
 
     onError = () => {
