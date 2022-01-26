@@ -1,4 +1,6 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import './charList.scss';
 import Spinner from '../spinner/Spinner';
 import MarvelService from '../../services/MarvelService';
@@ -30,7 +32,6 @@ class CharList extends Component{
         if (this.state.offset < 219) return;
         if (this.state.loadingNewChars) return;
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
-            this.onCharsLoading();
             this.onRequest(this.state.offset);
             
         } 
@@ -124,6 +125,10 @@ class CharList extends Component{
             </div>
         )
     }
+}
+
+CharList.propTypes = {
+    onSelectChar: PropTypes.func
 }
 
 export default CharList;
