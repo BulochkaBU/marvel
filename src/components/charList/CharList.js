@@ -9,20 +9,65 @@ class CharList extends Component{
         chars: [],
         loading: true,
         error: false,
+        loadingNewChars: false,
+        offset: 210,
+        charEnded: false,
     }
 
     marvelService = new MarvelService();
 
     componentDidMount = () => {
-        this.marvelService.getAllCharacters().then(this.onCharsLoaded).catch(this.onError);
+        this.onRequest();
+        window.addEventListener('scroll', this.loadMoreCharsByScroll);
+        
     }
 
     componentWillUnmount = () => {
-        console.log('unmount')
+        window.removeEventListener('scroll', this.loadMoreCharsByScroll);
     }
 
-    onCharsLoaded = (chars) => {
-        this.setState({chars, loading: false})
+    loadMoreCharsByScroll = () => {
+        if (this.state.offset < 219) return;
+        if (this.state.loadingNewChars) return;
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+            this.onCharsLoading();
+            this.onRequest(this.state.offset);
+            
+        } 
+        if (this.state.charEnded){
+            window.removeEventListener('scroll', this.loadMoreCharsByScroll);                 
+        }        
+    }
+
+    onRequest = (offset) => {
+        this.onCharsLoading();
+        this.marvelService.getAllCharacters(offset)
+            .then(this.onCharsLoaded)
+            .catch(this.onError);
+    }
+
+    onCharsLoading = () => {
+        this.setState({
+            loadingNewChars: true
+        })
+    }
+
+    onCharsLoaded = (newCharList) => {
+        let ended = false;
+        if (newCharList.length < 9) {
+            ended = true;
+        }
+
+        this.setState(({offset, chars}) => ({
+            
+            chars: [...chars, ...newCharList],
+            loading: false,
+            loadingNewChars: false,
+            offset: offset + 9,
+            charEnded: ended,
+        }))
+
+        
     }
 
     onError = () => {
@@ -30,6 +75,7 @@ class CharList extends Component{
     }
 
     renderListChar(arr) {
+        
         const listChars = arr.map(item => {
             let styleImg = {'objectFit': 'cover'}
 
@@ -52,13 +98,14 @@ class CharList extends Component{
 
     render() {
 
-        const {chars, loading, error} = this.state;
+        const {chars, loading, error, loadingNewChars, offset, charEnded} = this.state;
 
         const allChars = this.renderListChar(chars)
         
         const errorMessage = error ? <ErrorMessage /> : null;
         const spinner = loading ? <Spinner/>  : null;
         const content = !(loading || error) ? allChars : null;
+        const spinnerLoadMore = loadingNewChars ? <Spinner/>  : null;
 
 
         return (
@@ -66,7 +113,12 @@ class CharList extends Component{
                 {errorMessage}
                 {spinner}
                 {content}
-                <button className="button button__main button__long">
+                {spinnerLoadMore}
+                <button
+                    className="button button__main button__long"
+                    disabled={loadingNewChars}
+                    onClick={() => {this.onRequest(offset)}}
+                    style={{display: charEnded ? 'none': 'block'}}>
                     <div className="inner">load more</div>
                 </button>
             </div>
