@@ -7,6 +7,7 @@ import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 class CharList extends Component{
+    
     state = {
         chars: [],
         loading: true,
@@ -129,6 +130,10 @@ class CharList extends Component{
 
 CharList.propTypes = {
     onSelectChar: PropTypes.func
+}
+
+CharList.defaultProps = {
+    onSelectChar: (a) => {console.log(a)}
 }
 
 export default CharList;

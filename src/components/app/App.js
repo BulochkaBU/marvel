@@ -17,7 +17,7 @@ class App extends Component{
             selectedChar: id
         })
     }
-
+    
 
     render() {
         return (
