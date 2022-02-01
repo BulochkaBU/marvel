@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
@@ -17,11 +17,14 @@ class CharList extends Component{
         charEnded: false,
     }
 
+
+
     marvelService = new MarvelService();
 
     componentDidMount = () => {
         this.onRequest();
         window.addEventListener('scroll', this.loadMoreCharsByScroll);
+        
         
     }
 
@@ -32,7 +35,8 @@ class CharList extends Component{
     loadMoreCharsByScroll = () => {
         if (this.state.offset < 219) return;
         if (this.state.loadingNewChars) return;
-        if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight){
+            console.log('bla')
             this.onRequest(this.state.offset);
             
         } 
@@ -59,6 +63,7 @@ class CharList extends Component{
         if (newCharList.length < 9) {
             ended = true;
         }
+       
 
         this.setState(({offset, chars}) => ({
             
@@ -67,15 +72,16 @@ class CharList extends Component{
             loadingNewChars: false,
             offset: offset + 9,
             charEnded: ended,
+            activeItem: null,
         }))
-
-        
+       
     }
 
     onError = () => {
         this.setState({loading: false, error: true})
     }
-
+   
+  
     renderListChar(arr) {
         
         const listChars = arr.map(item => {
@@ -84,8 +90,13 @@ class CharList extends Component{
             if (item.thumbnail.includes('image_not_available')){
                 styleImg = {'objectFit': 'unset'};
             }
+
+            const active = this.props.charId === item.id
+            const clazz = active ? 'char__item char__item_selected' : 'char__item'
+
+
             return (
-                <li className="char__item" key={item.id} onClick={() => this.props.onSelectChar(item.id)}>
+                <li tabIndex={0} className={clazz} key={item.id} onClick={() => this.props.onSelectChar(item.id)}>
                     <img src={item.thumbnail} alt={item.name} style={styleImg}/>
                     <div className="char__name">{item.name}</div>
                 </li>

@@ -29,11 +29,11 @@ class App extends Component{
                 </ErrorBoundary>
                     <div className="char__content">
                         <ErrorBoundary>
-                            <CharList onSelectChar={this.onSelectedChar}/>
+                            <CharList onSelectChar={this.onSelectedChar} charId={this.state.selectedChar} />
                         </ErrorBoundary>
                             
                         <ErrorBoundary>
-                            <CharInfo charId={this.state.selectedChar}/>
+                            <CharInfo charId={this.state.selectedChar} />
                         </ErrorBoundary>                        
                     </div>
                     <img className="bg-decoration" src={decoration} alt="vision"/>
