@@ -1,69 +1,63 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './charList.scss';
 import Spinner from '../spinner/Spinner';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 const CharList = (props) => {
     const [chars, setChars] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
     const [loadingNewChars, setLoadingNewChars] = useState(true);
     const [offset, setOffset] = useState(210);
     const [charEnded, setCharEnded] = useState(false);
-    
-    const marvelService = new MarvelService();
+
+    const {loading, error, getAllCharacters} = useMarvelService();
+      
+    // const loadMoreCharsByScroll = () => {
+    //     if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){
+    //         console.log('scroll')
+    //     }
+    // }
+
+    // useEffect(() => {
+    //     window.addEventListener('scroll', loadMoreCharsByScroll);
+    //     return () => {
+    //         window.removeEventListener('scroll', loadMoreCharsByScroll);
+    //     }   
+    // }, [])
 
     useEffect(() => {
-        if (loadingNewChars && !charEnded){
-            onRequest();
-        }        
-    }, [loadingNewChars])
 
-    useEffect(() => {        
-        window.addEventListener('scroll', loadMoreCharsByScroll);
-        return () => {
-            window.removeEventListener('scroll', loadMoreCharsByScroll);
-        }   
+        onRequest(offset, true);
+        console.log('useeffect onrequets')
     }, [])
 
 
-    const loadMoreCharsByScroll = () => {
+    const onRequest = (offset, initial) => {        
+        initial ? setLoadingNewChars(false) : setLoadingNewChars(true)
 
-        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){     
-            setLoadingNewChars(true)
-        } 
-    
-    }
-
-    const onRequest = () => {
-        marvelService.getAllCharacters(offset)
-            .then(onCharsLoaded)
-            .catch(onError)
-            .finally(() => setLoadingNewChars(false));
+        getAllCharacters(offset)
+            .then(onCharsLoaded)    
+            
+        console.log('onrequets')
     }
 
     const onCharsLoaded = (newCharList) => {
+        
         let ended = false;
         if (newCharList.length < 9) {
             ended = true;
         }
 
         setChars(chars => [...chars, ...newCharList]);
-        setLoading(false);
-        setLoadingNewChars(false);
         setOffset(offset => offset + 9);
         setCharEnded(ended);
-       
+        setLoadingNewChars(false) 
+        console.log('loaded')
     }
 
-    const onError = () => {
-        setError(true);
-        setLoading(false)
-    }
-   
+  
   
     function renderListChar(arr) {
         
@@ -95,17 +89,15 @@ const CharList = (props) => {
     const allChars = renderListChar(chars)
     
     const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading ? <Spinner/>  : null;
-    const content = !(loading || error) ? allChars : null;
-    const spinnerLoadMore = loadingNewChars ? <Spinner/>  : null;
+    const spinner = loading && !loadingNewChars ? <Spinner/>  : null;
+    
 
 
     return (
         <div className="char__list">
             {errorMessage}
             {spinner}
-            {content}
-            {spinnerLoadMore}
+            {allChars}
             <button
                 className="button button__main button__long"
                 disabled={loadingNewChars}

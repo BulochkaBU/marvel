@@ -2,18 +2,15 @@ import { useState, useEffect } from 'react';
 import './charInfo.scss';
 import Spinner from '../spinner/Spinner';
 import Skeleton from '../skeleton/Skeleton';
-import MarvelService from '../../services/MarvelService';
+import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
 
 const CharInfo = (props) => {
 
     const [char, setChar] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
 
-
-    const marvelService = new MarvelService();
+    const {loading, error, getCharacter} = useMarvelService();
 
     useEffect(() => {
         updateChar();
@@ -22,29 +19,19 @@ const CharInfo = (props) => {
 
     const onCharLoaded = (char) => {
         setChar(char);
-        setLoading(false)
     }
 
-    const onCharLoading= () => {
-        setLoading(true)
-    }
 
     const updateChar = () => {
         const {charId} = props;
         if (!charId){
             return;
         }
-        onCharLoading();
-        marvelService.getCharacter(charId).then(onCharLoaded).catch(onError);
+
+        getCharacter(charId).then(onCharLoaded);
 
         // test errorBoundary this.foo.bar = 0;
     }
-
-    const onError = () => {
-        setLoading(false);
-        setError(true)
-    }
-
 
     const skeleton = char || loading || error ? null : <Skeleton/>
     const errorMessage = error ? <ErrorMessage /> : null;
