@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
 import useMarvelService from '../../services/MarvelService';
@@ -30,15 +30,16 @@ const ComicsList = (props) => {
         setComics(comics => [...comics, ...newComicsList])
         setOffset(offset => offset + 8);
         setComicsEnded(ended)
+        setLoadingNewComics(false)
     }
 
 
     function renderListComics(arr) {
         
-        const listComics = arr.map(item => {
+        const listComics = arr.map((item,i) => {
 
             return (
-                <li key={item.id} className="comics__item" onClick={() => props.onSelectedComics(item.id)}>
+                <li key={i} className="comics__item" onClick={() => props.onSelectedComics(item.id)}>
                     <a href="#">
                         <img src={item.thumbnail} alt={item.title} className="comics__item-img"/>
                         <div className="comics__item-name">{item.title}</div>
@@ -73,8 +74,7 @@ const ComicsList = (props) => {
             <button className="button button__main button__long"
             disabled={loadingNewComics} 
             style={{'display' : comicsEnded ? 'none' : 'block'}}
-            className="button button__main button__long"
-            onClick={() => onRequest(offset)}>
+                onClick={() => onRequest(offset)}>
                 <div className="inner">load more</div>
             </button>
         </div>
