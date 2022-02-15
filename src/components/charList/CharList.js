@@ -14,33 +14,34 @@ const CharList = (props) => {
 
     const {loading, error, getAllCharacters} = useMarvelService();
       
-    // const loadMoreCharsByScroll = () => {
-    //     if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){
-    //         console.log('scroll')
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     window.addEventListener('scroll', loadMoreCharsByScroll);
-    //     return () => {
-    //         window.removeEventListener('scroll', loadMoreCharsByScroll);
-    //     }   
-    // }, [])
+    const loadMoreCharsByScroll = () => {
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){
+            
+            setLoadingNewChars(true)
+            
+        }
+    }
 
     useEffect(() => {
-
-        onRequest(offset, true);
-        console.log('useeffect onrequets')
+        window.addEventListener('scroll', loadMoreCharsByScroll);
+        return () => {
+            window.removeEventListener('scroll', loadMoreCharsByScroll);
+        }   
     }, [])
 
+    useEffect(() => {
+        if (loadingNewChars){
+            onRequest(offset);
+        }
 
-    const onRequest = (offset, initial) => {        
-        initial ? setLoadingNewChars(false) : setLoadingNewChars(true)
+    }, [loadingNewChars])
+
+
+    const onRequest = (offset) => {        
 
         getAllCharacters(offset)
-            .then(onCharsLoaded)    
+            .then(onCharsLoaded)
             
-        console.log('onrequets')
     }
 
     const onCharsLoaded = (newCharList) => {
@@ -53,8 +54,10 @@ const CharList = (props) => {
         setChars(chars => [...chars, ...newCharList]);
         setOffset(offset => offset + 9);
         setCharEnded(ended);
-        setLoadingNewChars(false) 
-        console.log('loaded')
+        
+        setLoadingNewChars(false)
+        console.log(loadingNewChars)
+        
     }
 
   
