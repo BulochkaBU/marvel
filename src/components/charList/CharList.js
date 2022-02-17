@@ -15,10 +15,8 @@ const CharList = (props) => {
     const {loading, error, getAllCharacters} = useMarvelService();
       
     const loadMoreCharsByScroll = () => {
-        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){
-            
-            setLoadingNewChars(true)
-            
+        if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){            
+            setLoadingNewChars(true)            
         }
     }
 
@@ -37,11 +35,9 @@ const CharList = (props) => {
     }, [loadingNewChars])
 
 
-    const onRequest = (offset) => {        
-
+    const onRequest = (offset) => {   
         getAllCharacters(offset)
-            .then(onCharsLoaded)
-            
+            .then(onCharsLoaded)            
     }
 
     const onCharsLoaded = (newCharList) => {
@@ -53,13 +49,11 @@ const CharList = (props) => {
 
         setChars(chars => [...chars, ...newCharList]);
         setOffset(offset => offset + 9);
-        setCharEnded(ended);
-        
+        setCharEnded(ended);        
         setLoadingNewChars(false)
         console.log(loadingNewChars)
         
     }
-
   
   
     function renderListChar(arr) {

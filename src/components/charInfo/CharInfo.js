@@ -48,8 +48,8 @@ const CharInfo = (props) => {
     )
 }
 
-const View = ({character}) => {
-    const {name, description, thumbnail, homepage, wiki, comics} = character;
+const View = (props) => {
+    const {name, description, thumbnail, homepage, wiki, comics} = props.character;
 
     let styleImg = {'objectFit': 'cover'};
 
