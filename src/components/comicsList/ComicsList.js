@@ -8,7 +8,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 const ComicsList = (props) => {
     const [comics, setComics] = useState([]);
     const [comicsEnded, setComicsEnded] = useState(false);
-    const [offset, setOffset] = useState(0);
+    const [offset, setOffset] = useState(30);
     const [loadingNewComics, setLoadingNewComics] = useState(true);
 
     const {loading, error, getAllComics} = useMarvelService();

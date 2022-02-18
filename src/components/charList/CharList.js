@@ -13,6 +13,7 @@ const CharList = (props) => {
     const [charEnded, setCharEnded] = useState(false);
 
     const {loading, error, getAllCharacters} = useMarvelService();
+
       
     const loadMoreCharsByScroll = () => {
         if (window.innerHeight + window.pageYOffset >= document.body.offsetHeight){            
@@ -40,7 +41,10 @@ const CharList = (props) => {
             .then(onCharsLoaded)            
     }
 
-    const onCharsLoaded = (newCharList) => {
+    const onCharsLoaded = async (newCharList) => {
+
+        const {seccondLogger} = await import ('./some')
+        seccondLogger()
         
         let ended = false;
         if (newCharList.length < 9) {
@@ -53,6 +57,11 @@ const CharList = (props) => {
         setLoadingNewChars(false)
         console.log(loadingNewChars)
         
+    }
+
+    if (loading) {
+        import ('./some').then(obj => obj.logger()).catch()
+        import ('./some').then(obj => obj.default()).catch()
     }
   
   
