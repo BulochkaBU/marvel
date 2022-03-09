@@ -43,8 +43,8 @@ const CharList = (props) => {
 
     const onCharsLoaded = async (newCharList) => {
 
-        const {seccondLogger} = await import ('./some')
-        seccondLogger()
+        // const {seccondLogger} = await import ('./some')
+        // seccondLogger()
         
         let ended = false;
         if (newCharList.length < 9) {
@@ -55,14 +55,14 @@ const CharList = (props) => {
         setOffset(offset => offset + 9);
         setCharEnded(ended);        
         setLoadingNewChars(false)
-        console.log(loadingNewChars)
+        // console.log(loadingNewChars)
         
     }
 
-    if (loading) {
-        import ('./some').then(obj => obj.logger()).catch()
-        import ('./some').then(obj => obj.default()).catch()
-    }
+    // if (loading) {
+    //     import ('./some').then(obj => obj.logger()).catch()
+    //     import ('./some').then(obj => obj.default()).catch()
+    // }
   
   
     function renderListChar(arr) {

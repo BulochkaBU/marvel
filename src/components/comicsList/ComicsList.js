@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { CSSTransition } from 'react-transition-group';
 import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
 import useMarvelService from '../../services/MarvelService';
@@ -54,6 +55,7 @@ const ComicsList = (props) => {
         const listComics = arr.map((item,i) => {
 
             return (
+
                 <li key={i} className="comics__item" onClick={() => props.onSelectedComics(item.id)}>
                     <Link to={`/comics/${item.id}`}>
                         <img src={item.thumbnail} alt={item.title} className="comics__item-img"/>
@@ -61,15 +63,20 @@ const ComicsList = (props) => {
                         <div className="comics__item-price">{item.price}$</div>
                     </Link>
                 </li>
+
             )
 
             
         })
 
         return (
-            <ul className="comics__grid">
-                {listComics}
-            </ul>
+
+                <ul className="comics__grid">
+                    {listComics}
+                </ul>
+
+            
+
         )
     }
 
