@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { CSSTransition } from 'react-transition-group';
 import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
@@ -86,10 +87,19 @@ const ComicsList = (props) => {
     const spinner = loading && loadingNewComics ? <Spinner/>  : null;
 
     return (
-
+            
 
 
         <div className="comics__list">
+            <HelmetProvider>
+            <Helmet>
+                    <meta
+                        name="description"
+                        content="Comics"
+                        />
+                    <title>Comics</title>
+                </Helmet>
+                </HelmetProvider>
             {errorMessage}
             {spinner}
             {allChomics}
