@@ -7,13 +7,29 @@ import Spinner from '../spinner/Spinner';
 import useMarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 
+const setContent = (process, Component, loadingNewChars) => {
+    switch (process){
+        case 'waiting':
+            return <Spinner/>
+        case 'loading':
+            return loadingNewChars ? <Component/> : <Spinner/>
+        case 'confirmed':
+            return <Component/>
+        case 'error':
+            return <ErrorMessage />
+        default:
+            throw new Error('Unexpected process state')
+    }
+
+}
+
 const ComicsList = (props) => {
     const [comics, setComics] = useState([]);
     const [comicsEnded, setComicsEnded] = useState(false);
     const [offset, setOffset] = useState(30);
     const [loadingNewComics, setLoadingNewComics] = useState(true);
 
-    const {loading, error, getAllComics} = useMarvelService();
+    const {getAllComics, process, setprocess} = useMarvelService();
 
     useEffect(() => {
         if (loadingNewComics){
@@ -35,7 +51,7 @@ const ComicsList = (props) => {
     }, [])
 
     const onRequest = (offset) => {
-        getAllComics(offset).then(onComicsLoaded)   
+        getAllComics(offset).then(onComicsLoaded).then(() => setprocess('confirmed'))    
     }
 
     const onComicsLoaded = (newComicsList) => {
@@ -81,15 +97,8 @@ const ComicsList = (props) => {
         )
     }
 
-    const allChomics = renderListComics(comics)
-    
-    const errorMessage = error ? <ErrorMessage /> : null;
-    const spinner = loading && loadingNewComics ? <Spinner/>  : null;
 
-    return (
-            
-
-
+    return (          
         <div className="comics__list">
             <HelmetProvider>
             <Helmet>
@@ -100,9 +109,7 @@ const ComicsList = (props) => {
                     <title>Comics</title>
                 </Helmet>
                 </HelmetProvider>
-            {errorMessage}
-            {spinner}
-            {allChomics}
+                {setContent(process, () => renderListComics(comics), loadingNewComics)}
             <button className="button button__main button__long"
             disabled={loadingNewComics} 
             style={{'display' : comicsEnded ? 'none' : 'block'}}
